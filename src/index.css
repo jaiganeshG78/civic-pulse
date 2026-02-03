@@ -2,95 +2,127 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Civic Issue Reporting Platform - Environment-Inspired Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core Background & Foreground */
+    --background: 150 20% 98%;
+    --foreground: 160 30% 10%;
 
+    /* Card surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 160 30% 10%;
 
+    /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 160 30% 10%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Teal/Green civic tone */
+    --primary: 168 60% 32%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Warm earth tone */
+    --secondary: 35 30% 90%;
+    --secondary-foreground: 35 40% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted surfaces */
+    --muted: 150 15% 94%;
+    --muted-foreground: 160 15% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Fresh green */
+    --accent: 145 50% 88%;
+    --accent-foreground: 160 40% 20%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Border & Input */
+    --border: 160 20% 88%;
+    --input: 160 20% 88%;
+    --ring: 168 60% 32%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Category Colors - For issue pins and badges */
+    --category-garbage: 142 70% 35%;
+    --category-pothole: 30 50% 40%;
+    --category-water: 200 70% 45%;
+    --category-streetlight: 45 90% 50%;
+    --category-hospital: 0 70% 50%;
+    --category-other: 220 15% 50%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Status Colors */
+    --status-pending: 45 90% 50%;
+    --status-assigned: 200 70% 50%;
+    --status-in-progress: 168 60% 40%;
+    --status-resolved: 142 60% 40%;
+    --status-verified: 142 70% 35%;
+    --status-rejected: 0 70% 50%;
+    --status-fake: 0 0% 40%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    /* Priority Colors */
+    --priority-low: 142 50% 45%;
+    --priority-medium: 45 80% 50%;
+    --priority-high: 25 90% 55%;
+    --priority-critical: 0 80% 55%;
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    /* Sidebar */
+    --sidebar-background: 160 25% 97%;
+    --sidebar-foreground: 160 30% 20%;
+    --sidebar-primary: 168 60% 32%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 145 40% 90%;
+    --sidebar-accent-foreground: 160 40% 20%;
+    --sidebar-border: 160 20% 88%;
+    --sidebar-ring: 168 60% 32%;
 
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Map overlay */
+    --map-overlay: 0 0% 100%;
+    --map-overlay-foreground: 160 30% 10%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 160 25% 8%;
+    --foreground: 150 15% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 160 20% 12%;
+    --card-foreground: 150 15% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 160 20% 12%;
+    --popover-foreground: 150 15% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 168 55% 45%;
+    --primary-foreground: 160 30% 5%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 35 20% 20%;
+    --secondary-foreground: 35 30% 85%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 160 15% 18%;
+    --muted-foreground: 160 15% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 145 30% 20%;
+    --accent-foreground: 145 50% 85%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 160 15% 20%;
+    --input: 160 15% 20%;
+    --ring: 168 55% 45%;
+
+    --sidebar-background: 160 20% 10%;
+    --sidebar-foreground: 150 15% 90%;
+    --sidebar-primary: 168 55% 45%;
+    --sidebar-primary-foreground: 160 30% 5%;
+    --sidebar-accent: 145 25% 18%;
+    --sidebar-accent-foreground: 145 50% 85%;
+    --sidebar-border: 160 15% 20%;
+    --sidebar-ring: 168 55% 45%;
+
+    --map-overlay: 160 20% 15%;
+    --map-overlay-foreground: 150 15% 95%;
   }
 }
 
@@ -100,6 +132,144 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Status Badge Variants */
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .status-pending {
+    background-color: hsl(var(--status-pending) / 0.15);
+    color: hsl(var(--status-pending));
+  }
+  
+  .status-assigned {
+    background-color: hsl(var(--status-assigned) / 0.15);
+    color: hsl(var(--status-assigned));
+  }
+  
+  .status-in-progress {
+    background-color: hsl(var(--status-in-progress) / 0.15);
+    color: hsl(var(--status-in-progress));
+  }
+  
+  .status-resolved {
+    background-color: hsl(var(--status-resolved) / 0.15);
+    color: hsl(var(--status-resolved));
+  }
+  
+  .status-verified {
+    background-color: hsl(var(--status-verified) / 0.15);
+    color: hsl(var(--status-verified));
+  }
+  
+  .status-rejected {
+    background-color: hsl(var(--status-rejected) / 0.15);
+    color: hsl(var(--status-rejected));
+  }
+
+  /* Priority Indicators */
+  .priority-indicator {
+    @apply w-3 h-3 rounded-full;
+  }
+  
+  .priority-low {
+    background-color: hsl(var(--priority-low));
+  }
+  
+  .priority-medium {
+    background-color: hsl(var(--priority-medium));
+  }
+  
+  .priority-high {
+    background-color: hsl(var(--priority-high));
+    animation: pulse-slow 2s ease-in-out infinite;
+  }
+  
+  .priority-critical {
+    background-color: hsl(var(--priority-critical));
+    animation: pulse-fast 0.8s ease-in-out infinite;
+  }
+
+  /* Category colors for badges */
+  .category-garbage { background-color: hsl(var(--category-garbage) / 0.15); color: hsl(var(--category-garbage)); }
+  .category-pothole { background-color: hsl(var(--category-pothole) / 0.15); color: hsl(var(--category-pothole)); }
+  .category-water { background-color: hsl(var(--category-water) / 0.15); color: hsl(var(--category-water)); }
+  .category-streetlight { background-color: hsl(var(--category-streetlight) / 0.15); color: hsl(var(--category-streetlight)); }
+  .category-hospital { background-color: hsl(var(--category-hospital) / 0.15); color: hsl(var(--category-hospital)); }
+  .category-other { background-color: hsl(var(--category-other) / 0.15); color: hsl(var(--category-other)); }
+
+  /* Map pin animations */
+  @keyframes pulse-slow {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.85; }
+  }
+  
+  @keyframes pulse-fast {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.25); opacity: 0.75; }
+  }
+
+  /* Card hover effect */
+  .issue-card {
+    @apply transition-all duration-200 ease-out;
+  }
+  
+  .issue-card:hover {
+    @apply shadow-lg -translate-y-0.5;
+  }
+
+  /* Glass overlay for map controls */
+  .glass-panel {
+    @apply backdrop-blur-md bg-background/90 border border-border/50 shadow-lg;
+  }
+}
+
+/* Leaflet overrides */
+.leaflet-container {
+  font-family: inherit;
+  z-index: 0;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply rounded-lg shadow-xl border border-border/50;
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+}
+
+.leaflet-popup-tip {
+  background: hsl(var(--card));
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
 }

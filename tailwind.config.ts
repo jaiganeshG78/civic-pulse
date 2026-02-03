@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -57,6 +62,32 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Category colors for issue types
+        category: {
+          garbage: "hsl(var(--category-garbage))",
+          pothole: "hsl(var(--category-pothole))",
+          water: "hsl(var(--category-water))",
+          streetlight: "hsl(var(--category-streetlight))",
+          hospital: "hsl(var(--category-hospital))",
+          other: "hsl(var(--category-other))",
+        },
+        // Status colors
+        status: {
+          pending: "hsl(var(--status-pending))",
+          assigned: "hsl(var(--status-assigned))",
+          "in-progress": "hsl(var(--status-in-progress))",
+          resolved: "hsl(var(--status-resolved))",
+          verified: "hsl(var(--status-verified))",
+          rejected: "hsl(var(--status-rejected))",
+          fake: "hsl(var(--status-fake))",
+        },
+        // Priority colors
+        priority: {
+          low: "hsl(var(--priority-low))",
+          medium: "hsl(var(--priority-medium))",
+          high: "hsl(var(--priority-high))",
+          critical: "hsl(var(--priority-critical))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,25 +96,44 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "pulse-slow": {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.15)", opacity: "0.85" },
+        },
+        "pulse-fast": {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.25)", opacity: "0.75" },
+        },
+        "fade-in": {
+          from: { opacity: "0", transform: "translateY(10px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "slide-in-right": {
+          from: { transform: "translateX(100%)" },
+          to: { transform: "translateX(0)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-slow": "pulse-slow 2s ease-in-out infinite",
+        "pulse-fast": "pulse-fast 0.8s ease-in-out infinite",
+        "fade-in": "fade-in 0.3s ease-out",
+        "slide-in-right": "slide-in-right 0.3s ease-out",
+      },
+      boxShadow: {
+        card: "0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05)",
+        "card-hover":
+          "0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05)",
+        elevated:
+          "0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05)",
       },
     },
   },
