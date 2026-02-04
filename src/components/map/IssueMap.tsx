@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Issue, IssueCategory, getPriorityLevel } from '@/types';
@@ -30,30 +30,41 @@ const categoryColors: Record<IssueCategory, string> = {
 };
 
 // Create custom marker icons based on category
-function createCategoryIcon(category: IssueCategory, priorityScore: number): L.DivIcon {
+function createCategoryIcon(
+  category: IssueCategory, 
+  priorityScore: number,
+  isHighlighted: boolean = false
+): L.DivIcon {
   const color = categoryColors[category];
   const priorityLevel = getPriorityLevel(priorityScore);
   
   let animationClass = '';
-  if (priorityLevel === 'high') {
+  if (isHighlighted) {
+    animationClass = 'animate-pulse-fast';
+  } else if (priorityLevel === 'high') {
     animationClass = 'animate-pulse-slow';
   } else if (priorityLevel === 'critical') {
     animationClass = 'animate-pulse-fast';
   }
 
+  // Larger size for highlighted pins
+  const size = isHighlighted ? 48 : 32;
+  const height = isHighlighted ? 60 : 40;
+
   return L.divIcon({
     className: 'custom-marker',
     html: `
       <div class="relative ${animationClass}">
-        <svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 0C7.164 0 0 7.164 0 16c0 12 16 24 16 24s16-12 16-24c0-8.836-7.164-16-16-16z" fill="${color}"/>
+        <svg width="${size}" height="${height}" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 0C7.164 0 0 7.164 0 16c0 12 16 24 16 24s16-12 16-24c0-8.836-7.164-16-16-16z" fill="${color}" ${isHighlighted ? 'stroke="white" stroke-width="2"' : ''}/>
           <circle cx="16" cy="16" r="8" fill="white" fill-opacity="0.9"/>
         </svg>
+        ${isHighlighted ? '<div class="absolute -inset-2 rounded-full border-2 border-primary animate-ping opacity-75"></div>' : ''}
       </div>
     `,
-    iconSize: [32, 40],
-    iconAnchor: [16, 40],
-    popupAnchor: [0, -40],
+    iconSize: [size, height],
+    iconAnchor: [size / 2, height],
+    popupAnchor: [0, -height],
   });
 }
 
@@ -62,6 +73,7 @@ interface IssueMapProps {
   center?: [number, number];
   zoom?: number;
   onIssueClick?: (issue: Issue) => void;
+  highlightedIssueId?: string;
   className?: string;
 }
 
@@ -83,6 +95,7 @@ export function IssueMap({
   center = [20.5937, 78.9629], // Default to India center
   zoom = 5,
   onIssueClick,
+  highlightedIssueId,
   className = 'h-[500px] w-full'
 }: IssueMapProps) {
   return (
@@ -103,7 +116,11 @@ export function IssueMap({
           <Marker
             key={issue.id}
             position={[issue.latitude, issue.longitude]}
-            icon={createCategoryIcon(issue.category, issue.priority_score)}
+            icon={createCategoryIcon(
+              issue.category, 
+              issue.priority_score,
+              issue.id === highlightedIssueId
+            )}
             eventHandlers={{
               click: () => onIssueClick?.(issue),
             }}

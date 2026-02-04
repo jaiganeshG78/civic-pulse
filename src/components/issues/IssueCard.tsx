@@ -5,16 +5,22 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Clock, ThumbsUp, AlertTriangle, ChevronRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
 
 interface IssueCardProps {
   issue: Issue;
   onVote?: (issueId: string) => void;
+  onViewDetails?: (issue: Issue) => void;
   showVoteButton?: boolean;
   className?: string;
 }
 
-export function IssueCard({ issue, onVote, showVoteButton = true, className }: IssueCardProps) {
+export function IssueCard({ 
+  issue, 
+  onVote, 
+  onViewDetails,
+  showVoteButton = true, 
+  className 
+}: IssueCardProps) {
   const priorityLevel = getPriorityLevel(issue.priority_score);
   
   const categoryClasses: Record<string, string> = {
@@ -43,13 +49,20 @@ export function IssueCard({ issue, onVote, showVoteButton = true, className }: I
     critical: 'priority-critical',
   };
 
+  const handleViewDetails = () => {
+    onViewDetails?.(issue);
+  };
+
   return (
     <Card className={cn('issue-card overflow-hidden', className)}>
       <CardContent className="p-0">
         <div className="flex">
           {/* Image */}
           {issue.image_url && (
-            <div className="relative w-32 flex-shrink-0 sm:w-40">
+            <div 
+              className="relative w-32 flex-shrink-0 cursor-pointer sm:w-40"
+              onClick={handleViewDetails}
+            >
               <img
                 src={issue.image_url}
                 alt="Issue"
@@ -86,7 +99,7 @@ export function IssueCard({ issue, onVote, showVoteButton = true, className }: I
               </p>
             )}
 
-            {/* Meta row */}
+            {/* Meta row - Human readable location only */}
             <div className="mt-auto flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
@@ -121,11 +134,14 @@ export function IssueCard({ issue, onVote, showVoteButton = true, className }: I
                   <Badge variant="outline" className="text-xs">Your report</Badge>
                 )}
               </div>
-              <Button variant="ghost" size="sm" asChild className="h-8">
-                <Link to={`/issues/${issue.id}`}>
-                  View Details
-                  <ChevronRight className="ml-1 h-3.5 w-3.5" />
-                </Link>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8"
+                onClick={handleViewDetails}
+              >
+                View Details
+                <ChevronRight className="ml-1 h-3.5 w-3.5" />
               </Button>
             </div>
           </div>
