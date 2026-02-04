@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { LocationPicker } from '@/components/map/LocationPicker';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +15,8 @@ import {
   AlertCircle, 
   CheckCircle2,
   X,
-  Navigation
+  Navigation,
+  Map as MapIcon
 } from 'lucide-react';
 import { GeoLocation } from '@/types';
 import { useToast } from '@/hooks/use-toast';
@@ -32,6 +33,7 @@ export default function ReportIssuePage() {
   const [isLocating, setIsLocating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
 
   // Auto-detect location on mount
   useEffect(() => {
@@ -52,17 +54,39 @@ export default function ReportIssuePage() {
       async (position) => {
         const { latitude, longitude } = position.coords;
         
-        // Reverse geocoding would happen here via backend
-        // For demo, we'll use a placeholder place name
-        setLocation({
-          latitude,
-          longitude,
-          place: 'Detected Location, Bangalore',
-        });
+        // Try to reverse geocode for place name
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+            { headers: { 'Accept-Language': 'en' } }
+          );
+          
+          if (response.ok) {
+            const data = await response.json();
+            setLocation({
+              latitude,
+              longitude,
+              place: data.display_name || 'Detected Location',
+            });
+          } else {
+            setLocation({
+              latitude,
+              longitude,
+              place: 'Detected Location',
+            });
+          }
+        } catch {
+          setLocation({
+            latitude,
+            longitude,
+            place: 'Detected Location',
+          });
+        }
+        
         setIsLocating(false);
       },
       (error) => {
-        setLocationError('Failed to detect location. Please enable GPS.');
+        setLocationError('Failed to detect location. Please enable GPS or select manually on map.');
         setIsLocating(false);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
@@ -98,6 +122,12 @@ export default function ReportIssuePage() {
     }
   };
 
+  const handleLocationPickerSelect = (selectedLocation: GeoLocation) => {
+    setLocation(selectedLocation);
+    setLocationError('');
+    setShowLocationPicker(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -113,7 +143,7 @@ export default function ReportIssuePage() {
     if (!location) {
       toast({
         title: 'Location required',
-        description: 'Please enable location detection',
+        description: 'Please detect or select a location',
         variant: 'destructive',
       });
       return;
@@ -141,6 +171,17 @@ export default function ReportIssuePage() {
       setIsSubmitting(false);
     }
   };
+
+  // Show full-screen location picker when active
+  if (showLocationPicker) {
+    return (
+      <LocationPicker
+        onLocationSelect={handleLocationPickerSelect}
+        onCancel={() => setShowLocationPicker(false)}
+        initialLocation={location || undefined}
+      />
+    );
+  }
 
   return (
     <MainLayout requireAuth allowedRoles={['citizen']}>
@@ -244,30 +285,70 @@ export default function ReportIssuePage() {
                       <span className="text-sm">Detecting your location...</span>
                     </div>
                   ) : location ? (
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                          <MapPin className="h-5 w-5 text-primary" />
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                            <MapPin className="h-5 w-5 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium">Selected Location</p>
+                            <p className="text-sm text-muted-foreground line-clamp-2">
+                              {location.place}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium">{location.place}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
-                          </p>
-                        </div>
+                        <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
                       </div>
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                      
+                      {/* Location selection buttons */}
+                      <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={detectLocation}
+                        >
+                          <Navigation className="mr-2 h-4 w-4" />
+                          Re-detect Location
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowLocationPicker(true)}
+                        >
+                          <MapIcon className="mr-2 h-4 w-4" />
+                          Select on Map
+                        </Button>
+                      </div>
                     </div>
                   ) : (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={detectLocation}
-                      className="w-full"
-                    >
-                      <Navigation className="mr-2 h-4 w-4" />
-                      Detect Location
-                    </Button>
+                    <div className="space-y-3">
+                      <p className="text-sm text-muted-foreground text-center mb-3">
+                        Choose how to set the issue location
+                      </p>
+                      <div className="flex flex-col gap-2 sm:flex-row">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={detectLocation}
+                          className="flex-1"
+                        >
+                          <Navigation className="mr-2 h-4 w-4" />
+                          Detect Current Location
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setShowLocationPicker(true)}
+                          className="flex-1"
+                        >
+                          <MapIcon className="mr-2 h-4 w-4" />
+                          Select Location on Map
+                        </Button>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

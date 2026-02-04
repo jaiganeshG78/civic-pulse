@@ -1,9 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { IssueTimeline } from '@/components/issues/IssueTimeline';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { IssueDetailModal } from '@/components/issues/IssueDetailModal';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
   Plus, 
   Clock, 
@@ -15,12 +14,16 @@ import {
 import { Link } from 'react-router-dom';
 import { demoIssues } from '@/data/demoIssues';
 import { useAuth } from '@/contexts/AuthContext';
-import { getCategoryDisplayName, getStatusDisplayName, getPriorityLevel } from '@/types';
+import { getCategoryDisplayName, getStatusDisplayName, Issue } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 export default function MyIssuesPage() {
   const { user } = useAuth();
+  
+  // Modal state
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Filter to show only user's own issues
   const myIssues = useMemo(() => {
@@ -52,6 +55,11 @@ export default function MyIssuesPage() {
     verified: 'status-verified',
     rejected: 'status-rejected',
     fake: 'bg-muted text-muted-foreground',
+  };
+
+  const handleViewDetails = (issue: Issue) => {
+    setSelectedIssue(issue);
+    setIsModalOpen(true);
   };
 
   return (
@@ -114,7 +122,11 @@ export default function MyIssuesPage() {
         {myIssues.length > 0 ? (
           <div className="space-y-4">
             {myIssues.map((issue) => (
-              <Card key={issue.id} className="overflow-hidden">
+              <Card 
+                key={issue.id} 
+                className="cursor-pointer overflow-hidden transition-shadow hover:shadow-md"
+                onClick={() => handleViewDetails(issue)}
+              >
                 <div className="flex flex-col lg:flex-row">
                   {/* Image */}
                   {issue.image_url && (
@@ -142,7 +154,7 @@ export default function MyIssuesPage() {
                     {/* Title */}
                     <h3 className="mb-1 text-lg font-semibold">{issue.summary}</h3>
 
-                    {/* Meta */}
+                    {/* Meta - Human readable location only */}
                     <div className="mb-4 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <MapPin className="h-3.5 w-3.5" />
@@ -178,11 +190,9 @@ export default function MyIssuesPage() {
                           {getStatusDisplayName(issue.status)}
                         </span>
                       </div>
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link to={`/issues/${issue.id}`}>
-                          View Details
-                          <ChevronRight className="ml-1 h-4 w-4" />
-                        </Link>
+                      <Button variant="ghost" size="sm">
+                        View Details
+                        <ChevronRight className="ml-1 h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -210,6 +220,13 @@ export default function MyIssuesPage() {
           </Card>
         )}
       </div>
+
+      {/* Issue Detail Modal */}
+      <IssueDetailModal
+        issue={selectedIssue}
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      />
     </MainLayout>
   );
 }

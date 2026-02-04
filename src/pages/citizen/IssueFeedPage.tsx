@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { IssueCard } from '@/components/issues/IssueCard';
+import { IssueDetailModal } from '@/components/issues/IssueDetailModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -15,11 +16,10 @@ import {
   SlidersHorizontal, 
   MapPin, 
   Plus,
-  Loader2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { demoIssues, sortIssuesByPriority, filterIssues } from '@/data/demoIssues';
-import { IssueCategory, IssueStatus } from '@/types';
+import { IssueCategory, IssueStatus, Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 
 export default function IssueFeedPage() {
@@ -28,12 +28,21 @@ export default function IssueFeedPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'priority' | 'recent'>('priority');
+  
+  // Modal state
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleVote = (issueId: string) => {
     toast({
       title: 'Vote recorded!',
       description: 'Your vote helps prioritize this issue.',
     });
+  };
+
+  const handleViewDetails = (issue: Issue) => {
+    setSelectedIssue(issue);
+    setIsModalOpen(true);
   };
 
   const filteredIssues = useMemo(() => {
@@ -162,6 +171,7 @@ export default function IssueFeedPage() {
                 key={issue.id}
                 issue={issue}
                 onVote={handleVote}
+                onViewDetails={handleViewDetails}
                 className="animate-fade-in"
               />
             ))
@@ -187,6 +197,13 @@ export default function IssueFeedPage() {
           )}
         </div>
       </div>
+
+      {/* Issue Detail Modal */}
+      <IssueDetailModal
+        issue={selectedIssue}
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      />
     </MainLayout>
   );
 }
